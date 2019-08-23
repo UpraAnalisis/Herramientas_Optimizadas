@@ -58,4 +58,4 @@ Ahora si se hace clic derecho sobre la herramienta, es posible editar el script.
 
 ![ruta vacía](/Images/desconexion7.png)
 
-Si los problemas persisten, por favor escribanos un correo a carlos.cano@upra.gov.co
+Si los problemas persisten, por favor escribanos un correo a atencionalusuario@upra.gov.co
