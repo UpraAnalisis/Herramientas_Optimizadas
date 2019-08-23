@@ -14,7 +14,7 @@ import arcpy,os,subprocess,time,inspect
 #=========Variables Globales y de Entorno=====================#
 t_inicio=time.clock()# captura el tiempo de inicio del proceso
 arcpy.env.workspace = "in_memory"
-arcpy.env.outputCoordinateSystem = arcpy.SpatialReference(3116)
+#arcpy.env.outputCoordinateSystem = arcpy.SpatialReference(3116)
 arcpy.env.overwriteOutput = True
 
 infea=arcpy.GetParameterAsText(0)

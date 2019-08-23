@@ -2,7 +2,7 @@
 import arcpy,os,time,exceptions
 try:
     t_inicio=time.clock()# captura el tiempo de inicio del proceso
-    arcpy.env.outputCoordinateSystem = arcpy.SpatialReference(3116)
+    #arcpy.env.outputCoordinateSystem = arcpy.SpatialReference(3116)
     arcpy.env.overwriteOutput = True
 
 

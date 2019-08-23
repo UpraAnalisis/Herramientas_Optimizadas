@@ -26,6 +26,8 @@ Para hacer uso de las herramientas optimizadas lo primero que se debe hacer es d
 
 Luego, una vez descargado, se debe descomprimir y se debe copiar la carpeta SCRIPTS_ANALISIS preferiblemente el disco C del equipo. En caso de que no se pueda, se debe copiar en el disco D o  E o en la raíz de cualquier unidad disponible. La razón por la que se deben copiar estas herramientas en tal directorio, se debe a que las herramientas optimizadas tienen rutas relativas y automáticamente se redireccionan a la capeta **SCRIPTS_ANALISIS** localizada en la raíz de cualquier unidad de disco disponible. Esto es necesario si se van a emplear los modelos de geoprocesamiento suministrados en el repositorio de [modelos de geoprocesamiento](https://github.com/UpraAnalisis/Modelos-de-Geoprocesamiento).
 
+Una vez se hayan descargado las herramientas y en caso de inconvenientes, se hayan 
+
 ## Solución de problemas
 
 Si no se tiene en cuenta el procedimiento de almacenar los scripts en la carpeta **SCRIPTS_ANALISIS** en el directorio raíz de una de las unidades de disco disponible, es probable que las herramientas no encuentren la ruta del script. ¿Cómo identificar este problema? El problema se presenta cuando al ejecutar la herramienta aparece el siguiente mensaje.
