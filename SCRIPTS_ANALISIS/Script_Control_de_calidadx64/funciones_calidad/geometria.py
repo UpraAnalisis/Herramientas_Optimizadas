@@ -1,0 +1,11 @@
+﻿#-*- coding: 'utf-8' -*-
+import arcpy
+import sys
+import os
+import datetime
+
+def geometria_check(capa,ruta):
+    gdb=arcpy.CreateFileGDB_management(ruta,"errores_%s"%(datetime.datetime.now().strftime("%b_%d_%Y_%H_%M_%S")))
+    registros = int(arcpy.GetCount_management(arcpy.management.CheckGeometry(capa,"%s\\geometria"%(gdb)))[0])
+    return str(registros)+";"+"%s\\geometria"%(gdb)
+
