@@ -5,6 +5,7 @@ import os
 import sys
 import subprocess
 import inspect
+##import easygui
 
 arcpy.env.overwriteOutput = 1
 reload(sys)
@@ -69,19 +70,33 @@ verPythonDir=verPython.replace("\\python.exe","") # obtiene la ruta del director
 script=directorioyArchivo() #
 script=script[1]+"\\"+scriptAuxiliar # almacena la ruta y nombre de archivo del script auxiliar
 comandos=r"start %s %s %s"%(verPython,script, parametros_string)
-
 aa = subprocess.Popen(comandos, stdin=None,stdout=subprocess.PIPE,shell=True,env=dict(os.environ, PYTHONHOME=verPythonDir))
 astdout, astderr = aa.communicate()
-texto= open(r"%s"%(archivo),"r")
-if  "#" in texto.read():
+texto = open(r"%s"%(archivo),"r")
+texto_anterior = texto.read()
+if  "#" in texto_anterior:
     arcpy.AddError("Por favor realize las correcciones indicadas en el archivo de reporte : %s"%(archivo))
-    texto.close()
+
+
 else:
-##    arcpy.AddWarning("No se encontraron errores en las características evaluadas.")
-##    texto.close()
-    archivo,direc =directorioyArchivo()
-    txt_logo = open(r"%s\ok_ok.txt"%(direc),"r")
-    arcpy.AddWarning(txt_logo.read())
+    arcpy.AddWarning("No se encontraron errores en las características evaluadas.")
+    archivox,direc =directorioyArchivo()
+    txt_ok = open(r"%s\ok_ok.txt"%(direc),"r")
+    texto_ok =txt_ok.read()
+    txt_ok.close()
+    txt_logo_upra = open(r"%s\logo.txt"%(direc),"r")
+    texto_logo_upra =txt_logo_upra.read()
+    txt_logo_upra.close()
+
+    arcpy.AddWarning(texto_ok)
     arcpy.AddWarning( "")
-    txt_logo.close()
+    texto1 = open(r"%s"%(archivo),"w")
+    texto1.write(texto_anterior)
+    texto1.write('\n')
+    texto1.write("No se encontraron errores en las características evaluadas.")
+    texto1.write('\n')
+    texto1.write(texto_ok)
+    texto1.close()
+texto.close()
+
 

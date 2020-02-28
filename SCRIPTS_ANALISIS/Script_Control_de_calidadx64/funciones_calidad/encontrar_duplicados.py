@@ -1,4 +1,5 @@
 #-*- coding:'utf-8' -*-
+# nueva
 
 import arcpy
 import datetime
@@ -6,7 +7,8 @@ import datetime
 def duplicados(capa,ruta):
     global gdb
     gdb=arcpy.CreateFileGDB_management(ruta,"duplicados_%s"%(datetime.datetime.now().strftime("%b_%d_%Y_%H_%M_%S")))
-    capa_copia=arcpy.CopyFeatures_management(in_features=capa,out_feature_class="in_memory\\%s"%(arcpy.ValidateTableName(arcpy.Describe(capa).name)))
+    ##capa_copia=arcpy.CopyFeatures_management(in_features=capa,out_feature_class="in_memory\\%s"%(arcpy.ValidateTableName(arcpy.Describe(capa).name)))
+    capa_copia=arcpy.CopyFeatures_management(in_features=capa,out_feature_class="%s\\%s"%(gdb,arcpy.ValidateTableName(arcpy.Describe(capa).name)))
     arcpy.AddField_management(capa_copia, "dupli", "TEXT", "", "", "", "", "NULLABLE", "NON_REQUIRED", "")
     with arcpy.da.UpdateCursor(capa_copia,["SHAPE@Y","SHAPE@X","SHAPE@AREA","dupli"]) as cursor:
       for fila in cursor:
@@ -22,7 +24,7 @@ def duplicados(capa,ruta):
        cursor.updateRow(fila)
 
     arcpy.FindIdentical_management(in_dataset=capa_copia,out_dataset=str(gdb) + "\\duplicados",fields=["dupli"],output_record_option="ONLY_DUPLICATES")
-##    arcpy.Delete_management("in_memory\\%s"%(arcpy.Describe(capa).name))
+    arcpy.Delete_management("%s\\%s"%(gdb,arcpy.ValidateTableName(arcpy.Describe(capa).name)))
     registros = int(arcpy.GetCount_management(str(gdb) + "\\duplicados")[0])
     return str(registros)+";"+"%s\\duplicados"%(gdb)
 

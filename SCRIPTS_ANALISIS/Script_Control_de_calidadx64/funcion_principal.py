@@ -7,6 +7,7 @@ import datetime
 import subprocess
 import exceptions
 import inspect
+##import easygui
 from funciones_calidad.nombres_capas import *
 from funciones_calidad.nombres_campos import *
 from funciones_calidad.tiene_zm import *
@@ -20,6 +21,7 @@ from funciones_calidad.caracteres_valores import *
 from funciones_calidad.extent import *
 from funciones_calidad.encontrar_duplicados import *
 from funciones_calidad.comparar_area import *
+from funciones_calidad.neighbors import *
 
 try:
 
@@ -42,7 +44,6 @@ try:
         nombre_del_identificador = cambia_caracteres(arcpy.GetParameterAsText(2))
         capa_area = cambia_caracteres(arcpy.GetParameterAsText(3)).decode('utf-8')
 
-
         if arcpy.Exists(capa_area):
             capa_area = arcpy.Describe(capa_area).catalogpath
 
@@ -53,25 +54,34 @@ try:
 
         if cambia_caracteres(arcpy.GetParameterAsText(6)) != "":
             area_minima , unidades_aream = cambia_caracteres(arcpy.GetParameterAsText(6)).split(" ")
-            area_minima = float(area_minima)
+            area_minima = float(area_minima.replace(",","."))
             unidades_aream = unidades_aream.upper()
 
        #######################################funciones auxiliares##########################################################
 
         ruta_salida = cambia_caracteres(arcpy.GetParameterAsText(5)).decode('utf-8')
         archivo = cambia_caracteres(arcpy.GetParameterAsText(0)).decode('utf-8')
+        tipo_validacion = cambia_caracteres(arcpy.GetParameterAsText(7)).decode('utf-8')
         reporte = open(archivo,"w")
 
 
-
         #####  Validaciones #######
+        archivox,direc =directorioyArchivo()
+        txt_logo_upra = open(r"%s\logo.txt"%(direc),"r")
+        texto_logo_upra =txt_logo_upra.read()
+        txt_logo_upra.close()
+        reporte.write(texto_logo_upra)
+        reporte.write('\n \n')
 
-        val_nombre_de_campos = arcpy.GetParameterAsText(7) # valida el nombre d elos campos
+        reporte.write("Evaluación de calidad realizada a la capa: %s \n que se encuentra ubicada en: %s \n \n"% (str(arcpy.Describe(capa_entrada).name), str(arcpy.Describe(capa_entrada).path)))
+
+
+        val_nombre_de_campos = arcpy.GetParameterAsText(8) # valida el nombre d elos campos
         if val_nombre_de_campos == "True":
             texto = validar_carac(capa_entrada)
             texto1 = num_carac(capa_entrada)
             if  texto1 !=0:
-                reporte.write("###### Validación de numero de caracteres en el nombre de los campos ###### \n")
+                reporte.write("###### Validación de número de caracteres en el nombre de los campos ###### \n")
                 reporte.write('\n')
                 reporte.write(str(texto1) + " \n")
                 conteo_validador+=1
@@ -83,7 +93,7 @@ try:
                     conteo_validador+=1
             reporte.write('\n')
 
-        val_nombre_capa = arcpy.GetParameterAsText(8) # valida el nombre de la capa
+        val_nombre_capa = arcpy.GetParameterAsText(9) # valida el nombre de la capa
         if val_nombre_capa == "True":
             if len(nombre_capa(capa_entrada))>0:
                 reporte.write("###### Validación del nombre de capa ###### \n")
@@ -92,7 +102,7 @@ try:
                 reporte.write('\n')
                 conteo_validador+=1
 
-        val_zm = arcpy.GetParameterAsText(9)
+        val_zm = arcpy.GetParameterAsText(10)
         if val_zm == "True":
             if tiene_m(capa_entrada) and tiene_z(capa_entrada):
                 reporte.write("###### Validación de geometrias Z y M ###### \n")
@@ -105,7 +115,7 @@ try:
                      conteo_validador+=1
                 reporte.write('\n')
 
-        multipartesx = arcpy.GetParameterAsText(10)
+        multipartesx = arcpy.GetParameterAsText(11)
         if multipartesx == "True":
             if multipartes(capa_entrada) != 0:
                 reporte.write("###### Validación de multiples partes ###### \n")
@@ -114,7 +124,7 @@ try:
                 reporte.write('\n')
                 conteo_validador+=1
 
-        identificadores = arcpy.GetParameterAsText(11)
+        identificadores = arcpy.GetParameterAsText(12)
         if identificadores == "True":
             if len(identificador(capa_entrada,nombre_del_identificador)) >0:
                  reporte.write("###### Validación del identificador ###### \n")
@@ -128,7 +138,7 @@ try:
                  conteo_validador+=1
 
 
-        validar_area = arcpy.GetParameterAsText(12)
+        validar_area = arcpy.GetParameterAsText(13)
         if validar_area == "True":
             diferencia = comparar_areas(capa_entrada, capa_area,area_validacion,unidades_area)
             if abs(diferencia) > area_validacion:
@@ -144,7 +154,7 @@ try:
 
 
 
-        val_pol_areaMinima = arcpy.GetParameterAsText(13)
+        val_pol_areaMinima = arcpy.GetParameterAsText(14)
         oid_campo = [f.name for f in arcpy.Describe(capa_entrada).fields if f.type == "OID"][0] ###funcion para obtner el nombre del OID
         if val_pol_areaMinima == "True":
             if len(validador_area(capa_entrada, area_minima, unidades_aream)) >0:
@@ -160,7 +170,7 @@ try:
                  conteo_validador+=1
 
 
-        val_extent = arcpy.GetParameterAsText(14)
+        val_extent = arcpy.GetParameterAsText(15)
         if val_extent == "True":
             distancia = compara_capas(capa_entrada,capa_area)
             if distancia >= 100:
@@ -171,7 +181,7 @@ try:
                 conteo_validador+=1
 
 
-        val_valores_vacios = arcpy.GetParameterAsText(15)
+        val_valores_vacios = arcpy.GetParameterAsText(16)
         if val_valores_vacios == "True":
              if valores_vacios(capa_entrada) != 0:
                 reporte.write("###### Validación de valores vacíos en campos ######" + " \n")
@@ -185,7 +195,7 @@ try:
                 reporte.write('\n')
                 conteo_validador+=1
 
-        val_geometria = arcpy.GetParameterAsText(16)
+        val_geometria = arcpy.GetParameterAsText(17)
         if val_geometria == "True":
             try:
                 dato = geometria_check(capa_entrada,ruta_salida)
@@ -206,7 +216,7 @@ try:
                     reporte.write('\n')
                     conteo_validador+=1
 
-        val_caracteres_valores = arcpy.GetParameterAsText(17)
+        val_caracteres_valores = arcpy.GetParameterAsText(18)
         if val_caracteres_valores == "True":
             if valores_campo(capa_entrada)!= 0:
                 reporte.write('\n')
@@ -219,7 +229,7 @@ try:
                 reporte.write('\n')
                 conteo_validador+=1
 
-        val_duplicados = arcpy.GetParameterAsText(18)
+        val_duplicados = arcpy.GetParameterAsText(19)
         if val_duplicados == "True":
             dato = duplicados(capa_entrada,ruta_salida)
             consulta = duplicados_OID(capa_entrada)
@@ -234,7 +244,7 @@ try:
                 conteo_validador+=1
             reporte.write('\n')
 
-        val_sis_referencia = arcpy.GetParameterAsText(19)
+        val_sis_referencia = arcpy.GetParameterAsText(20)
         if val_sis_referencia == "True":
              if not sistema_referencia(capa_entrada):
                 reporte.write("###### Validación del Sistema de Referencia ###### \n")
@@ -243,14 +253,26 @@ try:
                 conteo_validador+=1
                 reporte.write('\n')
 
+        val_polmenores_Vecinos = arcpy.GetParameterAsText(21)
+        if val_polmenores_Vecinos == "True":
+            try:
+                pol_Vecinos  = Reporte_neigbors(capa_entrada, 250000, tipo_validacion, ruta_salida)
+                reporte.write (os. linesep)
+                reporte.write (os. linesep)
+                reporte.write(pol_Vecinos)
+
+                if tipo_validacion != "PERMITIDOS":
+                    if len(pol_Vecinos) > 40: ###se deja de valor base 40 por que siempre se escribre cuantos poligonos hay, y ese texto tiene 40 caracteres, ver pol_Vecinos inicial
+                        conteo_validador+=1
+            except:
+                pol_Vecinos  = "#####Validación polígonos de menos de 25 Ha ######\n\n La validación de polígonos permitidos y no permitidos con menos de 25 Ha, se realiza para las \n capas de  zonificación que cuentan con gridcode 1, 2, 3, 8, 0. Por favor, revise si la capa ingresada \n cumple con estas condiciones."
+                reporte.write (os. linesep)
+                reporte.write (os. linesep)
+                reporte.write(pol_Vecinos)
+
+
         reporte.close()
 
-
-        if conteo_validador >0:
-            pass
-##             print("Por favor realize las correcciones indicadas en el archivo de reporte : %s"%(archivo))
-##             os.system("PAUSE")
-##             subprocess.Popen("%s %s"%("notepad.exe",archivo),stdin=None,stdout=subprocess.PIPE,shell=True)
 
 
 
