@@ -7,6 +7,7 @@ import datetime
 import subprocess
 import exceptions
 import inspect
+import arceditor
 ##import easygui
 from funciones_calidad.nombres_capas import *
 from funciones_calidad.nombres_campos import *
@@ -22,6 +23,8 @@ from funciones_calidad.extent import *
 from funciones_calidad.encontrar_duplicados import *
 from funciones_calidad.comparar_area import *
 from funciones_calidad.neighbors import *
+from funciones_calidad.evaluar_topologia import *
+
 
 try:
 
@@ -62,6 +65,7 @@ try:
         ruta_salida = cambia_caracteres(arcpy.GetParameterAsText(5)).decode('utf-8')
         archivo = cambia_caracteres(arcpy.GetParameterAsText(0)).decode('utf-8')
         tipo_validacion = cambia_caracteres(arcpy.GetParameterAsText(7)).decode('utf-8')
+        regla_topologica = cambia_caracteres(arcpy.GetParameterAsText(23)).decode('utf-8')
         reporte = open(archivo,"w")
 
 
@@ -271,11 +275,15 @@ try:
                 reporte.write(pol_Vecinos)
 
 
+        val_topologia = arcpy.GetParameterAsText(22)
+        if val_topologia == "True":
+            resultadoTopologia = topologia(capa_entrada, ruta_salida, regla_topologica)
+            if resultadoTopologia != None:
+                reporte.write (os. linesep)
+                reporte.write (os. linesep)
+                reporte.write (str(resultadoTopologia))
+                conteo_validador+=1
         reporte.close()
-
-
-
-
 
 
     if __name__ == '__main__':
