@@ -53,7 +53,9 @@ else:
 
 parametros = arcpy.GetParameterInfo()
 ruta_salida = arcpy.GetParameterAsText(4).decode('utf-8')
-archivo =r"%s\reporte_%s.txt"%(ruta_salida,datetime.datetime.now().strftime("%b_%d_%Y_%H_%M_%S"))
+archivo =r"%s\reporte_%s"%(ruta_salida,datetime.datetime.now().strftime("%b_%d_%Y_%H_%M_%S"))
+archivo = archivo.replace(".","_") + ".txt"
+
 nuevos_parametros = []
 for x in parametros:
     try:
@@ -69,7 +71,7 @@ verPython=verPythonfinal # asigna la versión de python que se va a usar 32 o 64
 verPythonDir=verPython.replace("\\python.exe","") # obtiene la ruta del directorio que almacena el ejecutable de python
 script=directorioyArchivo() #
 script=script[1]+"\\"+scriptAuxiliar # almacena la ruta y nombre de archivo del script auxiliar
-comandos=r"start %s %s %s"%(verPython,script, parametros_string)
+comandos=r'start %s "%s" %s'%(verPython,script, parametros_string)
 aa = subprocess.Popen(comandos, stdin=None,stdout=subprocess.PIPE,shell=True,env=dict(os.environ, PYTHONHOME=verPythonDir))
 astdout, astderr = aa.communicate()
 texto = open(r"%s"%(archivo),"r")
