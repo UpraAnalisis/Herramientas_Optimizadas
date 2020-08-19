@@ -36,7 +36,9 @@ def Reporte_neigbors(Capa_Entrada, area_no_permitida, tipo_validacion, ruta):
 
 
     # Process: Polygon Neighbors
-    gdb=arcpy.CreateFileGDB_management(ruta,"pol_vecinos_%s"%(datetime.datetime.now().strftime("%b_%d_%Y_%H_%M_%S")))
+    nombre_gdb = "pol_vecinos_%s"%(datetime.datetime.now().strftime("%b_%d_%Y_%H_%M_%S"))
+    nombre_gdb = nombre_gdb.replace(".","")
+    gdb=arcpy.CreateFileGDB_management(ruta,nombre_gdb)
     Capa_neighbors = str(gdb)+ "\\"+ os.path.basename (Capa_Entrada) + "_Neighbor"
     Tabla_neighbors= arcpy.PolygonNeighbors_analysis(Capa_Entrada, Capa_neighbors, Campos_neighbors, "NO_AREA_OVERLAP", "BOTH_SIDES", "", "METERS", "SQUARE_METERS")
 

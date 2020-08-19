@@ -54,7 +54,7 @@ else:
 parametros = arcpy.GetParameterInfo()
 ruta_salida = arcpy.GetParameterAsText(4).decode('utf-8')
 archivo =r"%s\reporte_%s"%(ruta_salida,datetime.datetime.now().strftime("%b_%d_%Y_%H_%M_%S"))
-archivo = archivo.replace(".","_") + ".txt"
+archivo = archivo.replace(".","") + ".txt"
 
 nuevos_parametros = []
 for x in parametros:

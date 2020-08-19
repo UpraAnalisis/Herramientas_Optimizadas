@@ -6,6 +6,7 @@ arcpy.env.overwriteOutput = 1
 
 def crea_capa_extent(capa):
     pre_ti = datetime.datetime.now().strftime("%b_%d_%Y_%H_%M_%S") +str(random.randint(400,800))
+    pre_ti = pre_ti.replace(".","")
     nueva_capa=arcpy.ValidateTableName(arcpy.Describe(capa).name+"%s_gg"%pre_ti,"in_memory")
     sr=arcpy.SpatialReference(arcpy.Describe(capa).spatialReference.factoryCode)
     extension = arcpy.Describe(capa).extent

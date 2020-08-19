@@ -6,7 +6,9 @@ import datetime
 
 def duplicados(capa,ruta):
     global gdb
-    gdb=arcpy.CreateFileGDB_management(ruta,"duplicados_%s"%(datetime.datetime.now().strftime("%b_%d_%Y_%H_%M_%S")))
+    nombre_gdb = "duplicados_%s"%(datetime.datetime.now().strftime("%b_%d_%Y_%H_%M_%S"))
+    nombre_gdb = nombre_gdb.replace(".","")
+    gdb=arcpy.CreateFileGDB_management(ruta,nombre_gdb)
     ##capa_copia=arcpy.CopyFeatures_management(in_features=capa,out_feature_class="in_memory\\%s"%(arcpy.ValidateTableName(arcpy.Describe(capa).name)))
     capa_copia=arcpy.CopyFeatures_management(in_features=capa,out_feature_class="%s\\%s"%(gdb,arcpy.ValidateTableName(arcpy.Describe(capa).name)))
     arcpy.AddField_management(capa_copia, "dupli", "TEXT", "", "", "", "", "NULLABLE", "NON_REQUIRED", "")
