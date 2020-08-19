@@ -193,7 +193,7 @@ def topologia(capa, folder_salida, ruleTopology):
         contador = 1
 
     if contador > 0:
-        return ErroresTopologia + "\n %s"%(contador)
+        return ErroresTopologia + "\n"
     elif contador == 0:
         return None
 
