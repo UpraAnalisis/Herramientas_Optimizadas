@@ -24,7 +24,7 @@ from funciones_calidad.encontrar_duplicados import *
 from funciones_calidad.comparar_area import *
 from funciones_calidad.neighbors import *
 from funciones_calidad.evaluar_topologia import *
-
+from funciones_calidad.Vertex_Count import *
 
 try:
 
@@ -65,7 +65,7 @@ try:
         ruta_salida = cambia_caracteres(arcpy.GetParameterAsText(5)).decode('utf-8')
         archivo = cambia_caracteres(arcpy.GetParameterAsText(0)).decode('utf-8')
         tipo_validacion = cambia_caracteres(arcpy.GetParameterAsText(7)).decode('utf-8')
-        regla_topologica = cambia_caracteres(arcpy.GetParameterAsText(23)).decode('utf-8')
+
         reporte = open(archivo,"w")
 
 
@@ -276,6 +276,7 @@ try:
 
 
         val_topologia = arcpy.GetParameterAsText(22)
+        regla_topologica = cambia_caracteres(arcpy.GetParameterAsText(23)).decode('utf-8')
         if val_topologia == "True":
             resultadoTopologia = topologia(capa_entrada, ruta_salida, regla_topologica)
             if resultadoTopologia != None:
@@ -283,6 +284,21 @@ try:
                 reporte.write (os. linesep)
                 reporte.write (str(resultadoTopologia))
                 conteo_validador+=1
+
+
+        val_Vertex = arcpy.GetParameterAsText(24)
+        VertexLimit = arcpy.GetParameterAsText(25)
+        if val_Vertex == "True":
+            resultadoVertices = VertexCount(capa_entrada,int(VertexLimit))
+            if resultadoVertices != None:
+                reporte.write (os. linesep)
+                reporte.write (os. linesep)
+                reporte.write (resultadoVertices)
+                conteo_validador+=1
+
+
+
+
         reporte.close()
 
 
