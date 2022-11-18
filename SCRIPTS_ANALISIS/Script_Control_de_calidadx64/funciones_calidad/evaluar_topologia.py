@@ -85,10 +85,13 @@ def topologia(capa, folder_salida, ruleTopology):
                             ####oid de los poligonos con sobreposicion
                             oid_campo= [f.name for f in arcpy.Describe(capa).fields if f.type == "OID"][0]
                             arreglo = []
-                            with arcpy.da.SearchCursor(path,["OID@","OriginObjectID","DestinationObjectID"]) as cursor:
+                            with arcpy.da.SearchCursor(path,["OID@","OriginObjectID","DestinationObjectID", "RuleDescription"]) as cursor:
                                 for fila in cursor:
-                                    arreglo.append(fila[1])
-                                    arreglo.append(fila[2])
+                                    if "Larger Than" in fila[3]:
+                                        pass
+                                    else:
+                                        arreglo.append(fila[1])
+                                        arreglo.append(fila[2])
                             if len(arreglo) >0:
                                 if len(arreglo)==1:
                                     ErroresTopologia = ErroresTopologia + 'Los siguientes OID presentan sobreposición %s in %s \n'%(oid_campo,str(tuple(list(set(arreglo)))).replace(",",""))
@@ -166,10 +169,13 @@ def topologia(capa, folder_salida, ruleTopology):
                             ####oid de los poligonos con sobreposicion
                             oid_campo= [f.name for f in arcpy.Describe(capa).fields if f.type == "OID"][0]
                             arreglo = []
-                            with arcpy.da.SearchCursor(path,["OID@","OriginObjectID","DestinationObjectID"]) as cursor:
+                            with arcpy.da.SearchCursor(path,["OID@","OriginObjectID","DestinationObjectID", "RuleDescription"]) as cursor:
                                 for fila in cursor:
-                                    arreglo.append(fila[1])
-                                    arreglo.append(fila[2])
+                                    if "Larger Than" in fila[3]:
+                                        pass
+                                    else:
+                                        arreglo.append(fila[1])
+                                        arreglo.append(fila[2])
                             if len(arreglo) >0:
                                 if len(arreglo)==1:
                                     ErroresTopologia = ErroresTopologia + 'Los siguientes OID presentan sobreposición %s in %s \n'%(oid_campo,str(tuple(list(set(arreglo)))).replace(",",""))
@@ -182,7 +188,7 @@ def topologia(capa, folder_salida, ruleTopology):
         arcpy.AddMessage(arcpy.GetMessages())
         msg = arcpy.GetMessages()
         if msg.find("-2147467259") != -1:
-            ErroresTopologia = "#######Evaluación Topología###### \n El Feature de entrada presenta demasiados errores topológicos, \n por lo que ArcGIS no puede crear la topología, se recomienda fraccionar en partes más pequeñas \n  e.x. sí es del territorio nacional, se puede dividir por departamentos, o emplear la herramienta Multitopology \n que se encuentra en U: \SCRIPTS_ANALISIS"
+            ErroresTopologia = "#######Evaluación Topología###### \n El Feature de entrada presenta demasiados errores topológicos, \n por lo que ArcGIS no puede crear la topología, se recomienda fraccionar en partes más pequeñas \n  e.x. sí es del territorio nacional, se puede dividir por departamentos."
             contador = 1
     except:
 

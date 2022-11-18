@@ -65,7 +65,6 @@ try:
         ruta_salida = cambia_caracteres(arcpy.GetParameterAsText(5)).decode('utf-8')
         archivo = cambia_caracteres(arcpy.GetParameterAsText(0)).decode('utf-8')
         tipo_validacion = cambia_caracteres(arcpy.GetParameterAsText(7)).decode('utf-8')
-
         reporte = open(archivo,"w")
 
 
@@ -82,6 +81,7 @@ try:
 
         val_nombre_de_campos = arcpy.GetParameterAsText(8) # valida el nombre d elos campos
         if val_nombre_de_campos == "True":
+            print ("Validacion nombre de los campos  \n")
             texto = validar_carac(capa_entrada)
             texto1 = num_carac(capa_entrada)
             if  texto1 !=0:
@@ -99,6 +99,7 @@ try:
 
         val_nombre_capa = arcpy.GetParameterAsText(9) # valida el nombre de la capa
         if val_nombre_capa == "True":
+            print ("Validacion nombre de la capa  \n")
             if len(nombre_capa(capa_entrada))>0:
                 reporte.write("###### Validación del nombre de capa ###### \n")
                 reporte.write('\n')
@@ -108,6 +109,7 @@ try:
 
         val_zm = arcpy.GetParameterAsText(10)
         if val_zm == "True":
+            print ("Validacion ZM   \n")
             if tiene_m(capa_entrada) and tiene_z(capa_entrada):
                 reporte.write("###### Validación de geometrias Z y M ###### \n")
                 reporte.write('\n')
@@ -121,6 +123,7 @@ try:
 
         multipartesx = arcpy.GetParameterAsText(11)
         if multipartesx == "True":
+            print ("Validacion multipartes  \n")
             if multipartes(capa_entrada) != 0:
                 reporte.write("###### Validación de multiples partes ###### \n")
                 reporte.write('\n')
@@ -130,6 +133,7 @@ try:
 
         identificadores = arcpy.GetParameterAsText(12)
         if identificadores == "True":
+            print ("Validacion Identificador unico \n")
             if len(identificador(capa_entrada,nombre_del_identificador)) >0:
                  reporte.write("###### Validación del identificador ###### \n")
                  reporte.write('\n')
@@ -144,6 +148,7 @@ try:
 
         validar_area = arcpy.GetParameterAsText(13)
         if validar_area == "True":
+            print ("Validacion de area  \n")
             diferencia = comparar_areas(capa_entrada, capa_area,area_validacion,unidades_area)
             if abs(diferencia) > area_validacion:
                 reporte.write("###### Validación del área ###### \n")
@@ -161,6 +166,7 @@ try:
         val_pol_areaMinima = arcpy.GetParameterAsText(14)
         oid_campo = [f.name for f in arcpy.Describe(capa_entrada).fields if f.type == "OID"][0] ###funcion para obtner el nombre del OID
         if val_pol_areaMinima == "True":
+            print ("Validacion de area minima  \n")
             if len(validador_area(capa_entrada, area_minima, unidades_aream)) >0:
                  reporte.write('\n')
                  reporte.write("###### Validación de polígonos de %s %s ###### \n"%(area_minima, unidades_aream))
@@ -176,6 +182,7 @@ try:
 
         val_extent = arcpy.GetParameterAsText(15)
         if val_extent == "True":
+            print ("Validacion extent   \n")
             distancia = compara_capas(capa_entrada,capa_area)
             if distancia >= 100:
                 reporte.write("###### Validación de cubrimiento espacial ###### \n")
@@ -187,6 +194,7 @@ try:
 
         val_valores_vacios = arcpy.GetParameterAsText(16)
         if val_valores_vacios == "True":
+             print ("Validacion valores vacios  \n")
              if valores_vacios(capa_entrada) != 0:
                 reporte.write("###### Validación de valores vacíos en campos ######" + " \n")
                 reporte.write('\n')
@@ -201,6 +209,7 @@ try:
 
         val_geometria = arcpy.GetParameterAsText(17)
         if val_geometria == "True":
+            print ("Validacion geometria  \n")
             try:
                 dato = geometria_check(capa_entrada,ruta_salida)
                 errores , ruta = dato.split(";")[0],dato.split(";")[1]
@@ -222,6 +231,7 @@ try:
 
         val_caracteres_valores = arcpy.GetParameterAsText(18)
         if val_caracteres_valores == "True":
+            print ("Validacion caracteres de los valores  \n")
             if valores_campo(capa_entrada)!= 0:
                 reporte.write('\n')
                 reporte.write("###### Validación de caracteres en los valores de los campos ######" + " \n")
@@ -235,7 +245,18 @@ try:
 
         val_duplicados = arcpy.GetParameterAsText(19)
         if val_duplicados == "True":
+            print ("Validacion de elementos duplicados  \n")            
             dato = duplicados(capa_entrada,ruta_salida)
+            '''
+            if "ValueError" in dato:
+                print ("La validación de elementos duplicados NO se pudo realizar  \n")
+                reporte.write("###### Validación de duplicados ######" + " \n")
+                reporte.write('\n')
+                reporte.write("La capa cuenta con geometrías nulas, repare esto y luego realice la revisión de elementos duplicados")
+                conteo_validador+=1
+                reporte.write('\n')
+            else:'''
+            
             consulta = duplicados_OID(capa_entrada)
             errores , ruta = dato.split(";")[0],dato.split(";")[1]
             if int(errores)>0:
@@ -250,6 +271,7 @@ try:
 
         val_sis_referencia = arcpy.GetParameterAsText(20)
         if val_sis_referencia == "True":
+             print ("Validación Sistema de referencia 3116 \n")
              if not sistema_referencia(capa_entrada):
                 reporte.write("###### Validación del Sistema de Referencia ###### \n")
                 reporte.write('\n')
@@ -278,6 +300,7 @@ try:
         val_topologia = arcpy.GetParameterAsText(22)
         regla_topologica = cambia_caracteres(arcpy.GetParameterAsText(23)).decode('utf-8')
         if val_topologia == "True":
+            print ("Validacion de topologia \n")
             resultadoTopologia = topologia(capa_entrada, ruta_salida, regla_topologica)
             if resultadoTopologia != None:
                 reporte.write (os. linesep)
@@ -289,9 +312,10 @@ try:
         val_Vertex = arcpy.GetParameterAsText(24)
         VertexLimit = arcpy.GetParameterAsText(25)
         if val_Vertex == "True":
+            print ("Validacion de numero de vertices \n")
             resultadoVertices = VertexCount(capa_entrada,int(VertexLimit))
             if resultadoVertices != None:
-                reporte.write (os. linesep)
+                reporte.write ("######## Validación de cantidad de vertices")
                 reporte.write (os. linesep)
                 reporte.write (resultadoVertices)
                 conteo_validador+=1
